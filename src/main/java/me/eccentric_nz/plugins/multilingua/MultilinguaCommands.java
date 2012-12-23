@@ -1,5 +1,6 @@
 package me.eccentric_nz.plugins.multilingua;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,7 +9,7 @@ import org.bukkit.command.CommandSender;
 public class MultilinguaCommands implements CommandExecutor {
 
     private Multilingua plugin;
-    private List<String> firstArgs;
+    private List<String> firstArgs = new ArrayList<String>();
 
     public MultilinguaCommands(Multilingua plugin) {
         this.plugin = plugin;
