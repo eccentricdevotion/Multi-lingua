@@ -31,7 +31,7 @@ public class MultilinguaChatListener implements Listener {
         List<Player> step3Players = null;
         String chat = event.getMessage();
         String[] first = chat.split(" ");
-        if (use_chat_radius && !first[0].equals(plugin.yell)) {
+        if (use_chat_radius && !first[first.length-1].equals(plugin.yell)) {
             int degradeAfter = plugin.getConfig().getInt("chat_degrade_after");
             int deafAfter = plugin.getConfig().getInt("chat_deaf_after");
             List<Player> collList = getPlayersWithin(event.getPlayer(), deafAfter);
