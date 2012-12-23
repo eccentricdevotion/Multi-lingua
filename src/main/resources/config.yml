@@ -1,9 +1,8 @@
-debug: true
 plain_text_key: '@'
 yell_key: '!'
 use_chat_radius: true
 chat_degrade_after: 10
 chat_deaf_after: 20
 dizzy_after_yell: true
-dizzy_ticks: 20
-dizzy_hunger: 1
+dizzy_ticks: 200
+dizzy_hunger: 2

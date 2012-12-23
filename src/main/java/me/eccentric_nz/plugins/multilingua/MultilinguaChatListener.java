@@ -108,12 +108,12 @@ public class MultilinguaChatListener implements Listener {
                 p.sendMessage(pre + cipher);
             }
         }
-        event.setCancelled(true);
         if (first[first.length-1].equals(plugin.yell) && plugin.getConfig().getBoolean("dizzy_after_yell")) {
             // remove hunger and make dizzy
             player.setFoodLevel(player.getFoodLevel()-plugin.getConfig().getInt("dizzy_hunger"));
             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, plugin.getConfig().getInt("dizzy_ticks"), 10));
         }
+        event.setCancelled(true);
     }
 
     public List<Player> getPlayersWithin(Player player, int distance) {
