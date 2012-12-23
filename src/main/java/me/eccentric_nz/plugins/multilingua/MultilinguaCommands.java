@@ -104,12 +104,10 @@ public class MultilinguaCommands implements CommandExecutor {
             }
             if (args[0].equalsIgnoreCase("plain_text_key")) {
                 // sanitise the string
-                String str = "'" + args[1] + "'";
-                plugin.getConfig().set("plain_text_key", str);
+                plugin.getConfig().set("plain_text_key", args[1]);
             }
             if (args[0].equalsIgnoreCase("yell_key")) {
-                String str = "'" + args[1] + "'";
-                plugin.getConfig().set("yell_key", str);
+                plugin.getConfig().set("yell_key", args[1]);
             }
             plugin.saveConfig();
             sender.sendMessage("[Multi-lingua] The config was updated!");
