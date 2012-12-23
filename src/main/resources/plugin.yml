@@ -1,0 +1,8 @@
+author: eccentric_nz
+description: This plugin hooks into Factions and allows players to speak in different languages.
+main: me.eccentric_nz.plugins.multilingua.Multilingua
+name: Multi-lingua
+startup: postworld
+url: http://dev.bukkit.org/server-mods/multilingua/
+version: '1.0'
+depend: [Factions]
