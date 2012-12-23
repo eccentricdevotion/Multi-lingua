@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class MultilinguaChatListener implements Listener {
 
@@ -21,6 +23,7 @@ public class MultilinguaChatListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
         boolean use_chat_radius = plugin.getConfig().getBoolean("use_chat_radius");
         Player[] playerList;
         List<Player> step1Players = null;
@@ -106,6 +109,11 @@ public class MultilinguaChatListener implements Listener {
             }
         }
         event.setCancelled(true);
+        if (first[first.length-1].equals(plugin.yell) && plugin.getConfig().getBoolean("dizzy_after_yell")) {
+            // remove hunger and make dizzy
+            player.setFoodLevel(player.getFoodLevel()-plugin.getConfig().getInt("dizzy_hunger"));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, plugin.getConfig().getInt("dizzy_ticks"), 10));
+        }
     }
 
     public List<Player> getPlayersWithin(Player player, int distance) {

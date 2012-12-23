@@ -4,3 +4,6 @@ yell_key: '!'
 use_chat_radius: true
 chat_degrade_after: 10
 chat_deaf_after: 20
+dizzy_after_yell: true
+dizzy_ticks: 20
+dizzy_hunger: 1
