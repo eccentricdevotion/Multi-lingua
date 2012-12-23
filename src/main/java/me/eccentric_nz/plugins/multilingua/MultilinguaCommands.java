@@ -2,6 +2,8 @@ package me.eccentric_nz.plugins.multilingua;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +23,7 @@ public class MultilinguaCommands implements CommandExecutor {
         firstArgs.add("dizzy_after_yell");
         firstArgs.add("dizzy_ticks");
         firstArgs.add("dizzy_hunger");
+        firstArgs.add("config");
     }
 
     @Override
@@ -33,6 +36,15 @@ public class MultilinguaCommands implements CommandExecutor {
             if (!firstArgs.contains(args[0])) {
                 sender.sendMessage("[Multi-lingua] That is not a valid config item!");
                 return false;
+            }
+            if (args[0].equalsIgnoreCase("config")) {
+                Set<String> configNames = plugin.getConfig().getKeys(false);
+                sender.sendMessage("[Multi-lingua]" + ChatColor.RED + " Here are the current plugin config options!");
+                for (String cname : configNames) {
+                    String value = plugin.getConfig().getString(cname);
+                    sender.sendMessage(ChatColor.AQUA + cname + ": " + ChatColor.RESET + value);
+                }
+                return true;
             }
             if (args.length < 2) {
                 sender.sendMessage("[Multi-lingua] Not enough command arguments!");
