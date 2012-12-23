@@ -1,2 +1,6 @@
 debug: true
 plain_text_key: '@'
+yell_key: 'yell'
+use_chat_radius: true
+chat_degrade_after: 10
+chat_deaf_after: 20
