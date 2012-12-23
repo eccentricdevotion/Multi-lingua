@@ -11,7 +11,9 @@ public class Multilingua extends JavaPlugin {
 
     PluginManager pm = Bukkit.getServer().getPluginManager();
     public MultilinguaChatListener chatListener;
-    public HashMap<String, String> encoder = new HashMap<String, String>();
+    public HashMap<Character, Character> encoder = new HashMap<Character, Character>();
+    public String key;
+    public String yell;
 
     @Override
     public void onDisable() {
@@ -43,12 +45,14 @@ public class Multilingua extends JavaPlugin {
             // Failed to submit the stats :-(
         }
 
-        String[] shuffled = MultilinguaConstants.shuffle(MultilinguaConstants.cipher).split("");
+        char[] shuffled = MultilinguaConstants.shuffle(MultilinguaConstants.cipher).toCharArray();
         int i = 0;
-        for (String s : MultilinguaConstants.chars) {
-            encoder.put(s, shuffled[i]);
+        for (char c : MultilinguaConstants.chars) {
+            encoder.put(c, shuffled[i]);
             i++;
         }
+        key = "[" + getConfig().getString("plain_text_key") + "]";
+        yell = "[" + getConfig().getString("yell_key") + "]";
     }
 
     private boolean setupFactions() {
