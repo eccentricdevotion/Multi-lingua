@@ -6,3 +6,13 @@ startup: postworld
 url: http://dev.bukkit.org/server-mods/multilingua/
 version: '1.0'
 softdepend: [Factions]
+permissions:
+  multilingua.admin:
+    description: Allow player to change GameModeTimer settings
+    default: op
+commands:
+  multilingua:
+    aliases: [ml]
+    description: Used to change Multi-lingua settings
+    permissions: multilingua.admin
+    usage: /<command> [config item] [value] e.g. /ml use_chat_radius true

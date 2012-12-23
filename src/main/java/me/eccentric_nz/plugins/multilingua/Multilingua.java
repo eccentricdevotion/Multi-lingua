@@ -11,6 +11,7 @@ public class Multilingua extends JavaPlugin {
 
     PluginManager pm = Bukkit.getServer().getPluginManager();
     public MultilinguaChatListener chatListener;
+    private MultilinguaCommands adminCommand;
     public HashMap<Character, Character> encoder = new HashMap<Character, Character>();
     public String key;
     public String yell;
@@ -37,6 +38,8 @@ public class Multilingua extends JavaPlugin {
         this.saveDefaultConfig();
         chatListener = new MultilinguaChatListener(this);
         getServer().getPluginManager().registerEvents(chatListener, this);
+        adminCommand = new MultilinguaCommands(this);
+        getCommand("multilingua").setExecutor(adminCommand);
 
         try {
             MetricsLite metrics = new MetricsLite(this);
