@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 public class MultilinguaConstants {
 
     public static final String MY_PLUGIN_NAME = ChatColor.GOLD + "[Multi-lingua] " + ChatColor.RESET;
-    public static final String[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;!?()0123456789 []@$%&".split("");
+    public static final char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;!?()0123456789 []@$%&".toCharArray();
     public static final String cipher = "MNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;!?()0123456789 []@$%&ABCDEFGHIJKL";
 
     public static String shuffle(String string) {
