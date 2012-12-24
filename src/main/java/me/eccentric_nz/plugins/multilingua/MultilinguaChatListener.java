@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,10 +27,12 @@ public class MultilinguaChatListener implements Listener {
     private HashMap<Character, Character> encoder;
     Logger log;
     MultilinguaDatabase service = MultilinguaDatabase.getInstance();
+    ConsoleCommandSender console;
 
     public MultilinguaChatListener(Multilingua plugin) {
         this.plugin = plugin;
         log = plugin.getLogger();
+        console = plugin.getServer().getConsoleSender();
     }
 
     @EventHandler
@@ -118,7 +121,7 @@ public class MultilinguaChatListener implements Listener {
                                 }
                             }
                             p.sendMessage(pre + chat);
-                            log.log(Level.INFO, "{0}{1}", new Object[]{pre, chat});
+                            console.sendMessage(pre + chat);
                         } else {
                             // send the cipher message
                             if (use_chat_radius && !first[first.length - 1].equals(plugin.yell)) {
@@ -134,7 +137,7 @@ public class MultilinguaChatListener implements Listener {
                                 }
                             }
                             p.sendMessage(pre + cipher);
-                            log.log(Level.INFO, "{0}{1}", new Object[]{pre, cipher});
+                            console.sendMessage(pre + cipher);
                         }
                     }
                     if (first[first.length - 1].equals(plugin.yell) && plugin.getConfig().getBoolean("dizzy_after_yell")) {
