@@ -1,7 +1,7 @@
 package me.eccentric_nz.plugins.multilingua;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -11,10 +11,11 @@ public class Multilingua extends JavaPlugin {
 
     PluginManager pm = Bukkit.getServer().getPluginManager();
     public MultilinguaChatListener chatListener;
+    public MultilinguaCommandListener commandListener;
     private MultilinguaCommands adminCommand;
-    public HashMap<Character, Character> encoder = new HashMap<Character, Character>();
     public String key;
     public String yell;
+    MultilinguaDatabase service = MultilinguaDatabase.getInstance();
 
     @Override
     public void onDisable() {
@@ -37,7 +38,9 @@ public class Multilingua extends JavaPlugin {
         }
         this.saveDefaultConfig();
         chatListener = new MultilinguaChatListener(this);
+        commandListener = new MultilinguaCommandListener(this);
         getServer().getPluginManager().registerEvents(chatListener, this);
+        getServer().getPluginManager().registerEvents(commandListener, this);
         adminCommand = new MultilinguaCommands(this);
         getCommand("multilingua").setExecutor(adminCommand);
 
@@ -48,12 +51,14 @@ public class Multilingua extends JavaPlugin {
             // Failed to submit the stats :-(
         }
 
-        char[] shuffled = MultilinguaConstants.shuffle(MultilinguaConstants.cipher).toCharArray();
-        int i = 0;
-        for (char c : MultilinguaConstants.chars) {
-            encoder.put(c, shuffled[i]);
-            i++;
+        try {
+            String path = getDataFolder() + File.separator + "multilingua.db";
+            service.setConnection(path);
+            service.createTables();
+        } catch (Exception e) {
+            debug("Connection and Tables Error: " + e);
         }
+
         key = "[" + getConfig().getString("plain_text_key") + "]";
         yell = "[" + getConfig().getString("yell_key") + "]";
     }

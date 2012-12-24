@@ -1,5 +1,11 @@
 package me.eccentric_nz.plugins.multilingua;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.struct.Role;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -7,11 +13,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MultilinguaCommands implements CommandExecutor {
 
     private Multilingua plugin;
     private List<String> firstArgs = new ArrayList<String>();
+    MultilinguaDatabase service = MultilinguaDatabase.getInstance();
 
     public MultilinguaCommands(Multilingua plugin) {
         this.plugin = plugin;
@@ -24,11 +32,81 @@ public class MultilinguaCommands implements CommandExecutor {
         firstArgs.add("dizzy_ticks");
         firstArgs.add("dizzy_hunger");
         firstArgs.add("config");
+        firstArgs.add("add");
+        firstArgs.add("remove");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("multilingua")) {
+            Player player = null;
+            if (sender instanceof Player) {
+                player = (Player) sender;
+            }
+            if (args[0].equalsIgnoreCase("add")) {
+                if (player == null) {
+                    sender.sendMessage("[Multi-lingua] Command must be run by a player!");
+                    return true;
+                }
+                FPlayer fp = FPlayers.i.get(player);
+                if (!fp.hasFaction()) {
+                    sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
+                    return true;
+                }
+                if (!fp.getRole().equals(Role.ADMIN)) {
+                    sender.sendMessage("[Multi-lingua] You must be a faction ADMIN to run this command!");
+                    return true;
+                }
+                String id = fp.getFactionId();
+                String queryAdd = "INSERT INTO multilingua (faction_id) VALUES ('" + id + "')";
+                Statement statement = null;
+                try {
+                    Connection connection = service.getConnection();
+                    statement = connection.createStatement();
+                    statement.executeUpdate(queryAdd);
+                } catch (SQLException e) {
+                    sender.sendMessage("[Multi-lingua] There was a problem creating the faction language!");
+                    return true;
+                } finally {
+                    try {
+                        statement.close();
+                    } catch (Exception e) {
+                    }
+                }
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("remove")) {
+                if (player == null) {
+                    sender.sendMessage("[Multi-lingua] Command must be run by a player!");
+                    return true;
+                }
+                FPlayer fp = FPlayers.i.get(player);
+                if (!fp.hasFaction()) {
+                    sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
+                    return true;
+                }
+                if (!fp.getRole().equals(Role.ADMIN)) {
+                    sender.sendMessage("[Multi-lingua] You must be a faction ADMIN to run this command!");
+                    return true;
+                }
+                String id = fp.getFactionId();
+                String queryRemove = "DELETE FROM multilingua WHERE faction_id = '" + id + "'";
+                Statement statement = null;
+                try {
+                    Connection connection = service.getConnection();
+                    statement = connection.createStatement();
+                    statement.executeUpdate(queryRemove);
+                } catch (SQLException e) {
+                    sender.sendMessage("[Multi-lingua] There was a problem removing the faction language!");
+                    return true;
+                } finally {
+                    try {
+                        statement.close();
+                    } catch (Exception e) {
+                    }
+                }
+                return true;
+            }
             if (!sender.hasPermission("multilingua.admin")) {
                 sender.sendMessage("[Multi-lingua] You do not have permission to use this command!");
                 return true;
