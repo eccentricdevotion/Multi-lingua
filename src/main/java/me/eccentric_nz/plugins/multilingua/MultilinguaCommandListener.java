@@ -27,10 +27,7 @@ public class MultilinguaCommandListener implements Listener {
         if (!hasFaction && hasPermission && isCommand) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 public void run() {
-                    // do check again to make sure faction creation was a success
-                    if (fp.hasFaction()) {
                         player.sendMessage("If you want to use Multi-lingua with your new faction, type " + ChatColor.AQUA + "/ml add");
-                    }
                 }
             }, 30L);
         }
