@@ -21,13 +21,12 @@ public class MultilinguaCommandListener implements Listener {
         final String command = event.getMessage();
         final Player player = event.getPlayer();
         final FPlayer fp = FPlayers.i.get(event.getPlayer());
-        boolean hasFaction = fp.hasFaction();
-        boolean hasPermission = player.hasPermission("");
+        boolean hasPermission = player.hasPermission("factions.create");
         boolean isCommand = (command.contains("f create") || command.contains("faction create"));
-        if (!hasFaction && hasPermission && isCommand) {
+        if (hasPermission && isCommand) {
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                 public void run() {
-                        player.sendMessage("If you want to use Multi-lingua with your new faction, type " + ChatColor.AQUA + "/ml add");
+                    player.sendMessage("If you want to use Multi-lingua with your new faction, type " + ChatColor.AQUA + "/ml add");
                 }
             }, 30L);
         }
