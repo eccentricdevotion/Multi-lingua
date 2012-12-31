@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.eccentric_nz.plugins.multilingua</groupId>
     <artifactId>Multilingua</artifactId>
-    <version>1.0</version>
+    <version>1.0-beta-3</version>
     <name>Multi-lingua</name>
     <url>http://dev.bukkit.org/server-mods/multilingua/</url>
     <repositories>

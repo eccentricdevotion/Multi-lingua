@@ -106,7 +106,7 @@ public class MultilinguaCommands implements CommandExecutor {
                     } catch (Exception e) {
                     }
                 }
-                sender.sendMessage("[Multi-lingua] You faction now speaks normally!");
+                sender.sendMessage("[Multi-lingua] Your faction now speaks normally!");
                 return true;
             }
             if (!sender.hasPermission("multilingua.admin")) {

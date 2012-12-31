@@ -77,6 +77,7 @@ public class MultilinguaChatListener implements Listener {
         }
         FPlayer fp = FPlayers.i.get(event.getPlayer());
         String fID = "";
+        boolean should_cipher = false;
         if (fp.hasFaction()) {
             fID = fp.getFactionId();
             String query = "SELECT faction_id FROM multilingua WHERE faction_id = '" + fID + "'";
@@ -87,6 +88,7 @@ public class MultilinguaChatListener implements Listener {
                 statement = connection.createStatement();
                 rs = statement.executeQuery(query);
                 if (rs.isBeforeFirst()) {
+                    should_cipher = true;
                     encoder = new HashMap<Character, Character>();
                     char[] shuffled = MultilinguaConstants.shuffle(MultilinguaConstants.cipher).toCharArray();
                     int i = 0;
@@ -130,7 +132,7 @@ public class MultilinguaChatListener implements Listener {
             pre = "<" + factionColour + fp.getChatTag() + space + opColour + player.getName() + ChatColor.RESET + "> ";
             // console always gets the plain message...
             console.sendMessage(pre + chat);
-            if ((onlineP.hasFaction() && onlineP.getFactionId().equals(fID)) || first[0].equals(plugin.key) || !fp.hasFaction()) {
+            if (!should_cipher || (onlineP.hasFaction() && onlineP.getFactionId().equals(fID)) || first[0].equals(plugin.key) || !fp.hasFaction()) {
                 // send the plain message
                 if (use_chat_radius && !first[first.length - 1].equals(plugin.yell)) {
                     char[] letters = playerchat.toCharArray();
