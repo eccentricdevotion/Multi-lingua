@@ -4,7 +4,7 @@ main: me.eccentric_nz.plugins.multilingua.Multilingua
 name: Multi-lingua
 startup: postworld
 url: http://dev.bukkit.org/server-mods/multilingua/
-version: '1.0-beta-3'
+version: '1.0-beta-4'
 softdepend: [Factions]
 permissions:
   multilingua.admin:

@@ -20,7 +20,6 @@ public class MultilinguaCommandListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         final String command = event.getMessage();
         final Player player = event.getPlayer();
-        final FPlayer fp = FPlayers.i.get(event.getPlayer());
         boolean hasPermission = player.hasPermission("factions.create");
         boolean isCommand = (command.contains("f create") || command.contains("faction create"));
         if (hasPermission && isCommand) {

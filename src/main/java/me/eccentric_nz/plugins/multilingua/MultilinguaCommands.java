@@ -2,7 +2,7 @@ package me.eccentric_nz.plugins.multilingua;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.struct.Role;
+import com.massivecraft.factions.struct.Rel;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -53,8 +53,8 @@ public class MultilinguaCommands implements CommandExecutor {
                     sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
                     return true;
                 }
-                if (!fp.getRole().equals(Role.ADMIN)) {
-                    sender.sendMessage("[Multi-lingua] You must be a faction ADMIN to run this command!");
+                if (!fp.getRole().equals(Rel.LEADER)) {
+                    sender.sendMessage("[Multi-lingua] You must be a faction LEADER to run this command!");
                     return true;
                 }
                 String id = fp.getFactionId();
@@ -69,7 +69,9 @@ public class MultilinguaCommands implements CommandExecutor {
                     return true;
                 } finally {
                     try {
-                        statement.close();
+                        if (statement != null) {
+                            statement.close();
+                        }
                     } catch (Exception e) {
                     }
                 }
@@ -86,8 +88,8 @@ public class MultilinguaCommands implements CommandExecutor {
                     sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
                     return true;
                 }
-                if (!fp.getRole().equals(Role.ADMIN)) {
-                    sender.sendMessage("[Multi-lingua] You must be a faction ADMIN to run this command!");
+                if (!fp.getRole().equals(Rel.LEADER)) {
+                    sender.sendMessage("[Multi-lingua] You must be a faction LEADER to run this command!");
                     return true;
                 }
                 String id = fp.getFactionId();
@@ -102,7 +104,9 @@ public class MultilinguaCommands implements CommandExecutor {
                     return true;
                 } finally {
                     try {
-                        statement.close();
+                        if (statement != null) {
+                            statement.close();
+                        }
                     } catch (Exception e) {
                     }
                 }
