@@ -1,7 +1,5 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +8,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class MultilinguaCommandListener implements Listener {
 
-    private Multilingua plugin;
+    private final Multilingua plugin;
 
     public MultilinguaCommandListener(Multilingua plugin) {
         this.plugin = plugin;
@@ -18,16 +16,12 @@ public class MultilinguaCommandListener implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
-        final String command = event.getMessage();
-        final Player player = event.getPlayer();
+        String command = event.getMessage();
+        Player player = event.getPlayer();
         boolean hasPermission = player.hasPermission("factions.create");
         boolean isCommand = (command.contains("f create") || command.contains("faction create"));
         if (hasPermission && isCommand) {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                public void run() {
-                    player.sendMessage("If you want to use Multi-lingua with your new faction, type " + ChatColor.AQUA + "/ml add");
-                }
-            }, 30L);
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> player.sendMessage("If you want to use Multi-lingua with your new faction, type " + ChatColor.AQUA + "/ml add"), 30L);
         }
     }
 }

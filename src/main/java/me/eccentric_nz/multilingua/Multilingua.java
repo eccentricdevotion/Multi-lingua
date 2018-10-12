@@ -1,20 +1,17 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
-import java.io.File;
-import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class Multilingua extends JavaPlugin {
 
     PluginManager pm = Bukkit.getServer().getPluginManager();
-    public MultilinguaChatListener chatListener;
-    public MultilinguaCommandListener commandListener;
-    private MultilinguaCommands adminCommand;
-    public String key;
-    public String yell;
+    private String key;
+    private String yell;
     MultilinguaDatabase service = MultilinguaDatabase.getInstance();
 
     @Override
@@ -36,20 +33,10 @@ public class Multilingua extends JavaPlugin {
             getDataFolder().setWritable(true);
             getDataFolder().setExecutable(true);
         }
-        this.saveDefaultConfig();
-        chatListener = new MultilinguaChatListener(this);
-        commandListener = new MultilinguaCommandListener(this);
-        getServer().getPluginManager().registerEvents(chatListener, this);
-        getServer().getPluginManager().registerEvents(commandListener, this);
-        adminCommand = new MultilinguaCommands(this);
-        getCommand("multilingua").setExecutor(adminCommand);
-
-        try {
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        } catch (IOException e) {
-            // Failed to submit the stats :-(
-        }
+        saveDefaultConfig();
+        getServer().getPluginManager().registerEvents(new MultilinguaChatListener(this), this);
+        getServer().getPluginManager().registerEvents(new MultilinguaCommandListener(this), this);
+        getCommand("multilingua").setExecutor(new MultilinguaCommands(this));
 
         try {
             String path = getDataFolder() + File.separator + "multilingua.db";
@@ -66,7 +53,6 @@ public class Multilingua extends JavaPlugin {
     private boolean setupFactions() {
         Plugin x = pm.getPlugin("Factions");
         if (x != null) {
-            //factions = (Factions) x;
             return true;
         } else {
             System.err.println("[Multi-lingua] Factions is required, but wasn't found!");
@@ -80,5 +66,13 @@ public class Multilingua extends JavaPlugin {
         if (getConfig().getBoolean("debug") == true) {
             System.out.println("[Multi-lingua Debug] " + o);
         }
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getYell() {
+        return yell;
     }
 }

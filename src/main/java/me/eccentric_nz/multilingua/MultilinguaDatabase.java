@@ -1,14 +1,13 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class MultilinguaDatabase {
 
-    private static MultilinguaDatabase instance = new MultilinguaDatabase();
+    private static final MultilinguaDatabase instance = new MultilinguaDatabase();
     public Connection connection = null;
     public Statement statement = null;
     private Multilingua plugin;

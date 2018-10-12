@@ -1,24 +1,24 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.struct.Rel;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.massivecraft.factions.Rel;
+import com.massivecraft.factions.entity.MPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class MultilinguaCommands implements CommandExecutor {
 
-    private Multilingua plugin;
-    private List<String> firstArgs = new ArrayList<String>();
+    private final Multilingua plugin;
+    private final List<String> firstArgs = new ArrayList<>();
     MultilinguaDatabase service = MultilinguaDatabase.getInstance();
 
     public MultilinguaCommands(Multilingua plugin) {
@@ -48,16 +48,16 @@ public class MultilinguaCommands implements CommandExecutor {
                     sender.sendMessage("[Multi-lingua] Command must be run by a player!");
                     return true;
                 }
-                FPlayer fp = FPlayers.i.get(player);
-                if (!fp.hasFaction()) {
+                MPlayer mp = MPlayer.get(player);
+                if (!mp.hasFaction()) {
                     sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
                     return true;
                 }
-                if (!fp.getRole().equals(Rel.LEADER)) {
+                if (!mp.getRole().equals(Rel.LEADER)) {
                     sender.sendMessage("[Multi-lingua] You must be a faction LEADER to run this command!");
                     return true;
                 }
-                String id = fp.getFactionId();
+                String id = mp.getFactionId();
                 String queryAdd = "INSERT INTO multilingua (faction_id) VALUES ('" + id + "')";
                 Statement statement = null;
                 try {
@@ -83,16 +83,16 @@ public class MultilinguaCommands implements CommandExecutor {
                     sender.sendMessage("[Multi-lingua] Command must be run by a player!");
                     return true;
                 }
-                FPlayer fp = FPlayers.i.get(player);
-                if (!fp.hasFaction()) {
+                MPlayer mp = MPlayer.get(player);
+                if (!mp.hasFaction()) {
                     sender.sendMessage("[Multi-lingua] You must have joined a faction before running this command!");
                     return true;
                 }
-                if (!fp.getRole().equals(Rel.LEADER)) {
+                if (!mp.getRole().equals(Rel.LEADER)) {
                     sender.sendMessage("[Multi-lingua] You must be a faction LEADER to run this command!");
                     return true;
                 }
-                String id = fp.getFactionId();
+                String id = mp.getFactionId();
                 String queryRemove = "DELETE FROM multilingua WHERE faction_id = '" + id + "'";
                 Statement statement = null;
                 try {

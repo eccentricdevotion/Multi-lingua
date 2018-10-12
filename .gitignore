@@ -1,7 +1,8 @@
 # osx noise
 .DS_Store
 profile
-
+.idea/
+*.iml
 # xcode noise
 build/*
 *.mode1

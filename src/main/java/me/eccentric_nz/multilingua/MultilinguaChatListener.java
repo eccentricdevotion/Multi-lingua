@@ -1,15 +1,6 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import com.massivecraft.factions.entity.MPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -19,9 +10,18 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 public class MultilinguaChatListener implements Listener {
 
-    private Multilingua plugin;
+    private final Multilingua plugin;
     private HashMap<Character, Character> encoder;
     MultilinguaDatabase service = MultilinguaDatabase.getInstance();
     ConsoleCommandSender console;
@@ -35,7 +35,7 @@ public class MultilinguaChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         boolean use_chat_radius = plugin.getConfig().getBoolean("use_chat_radius");
-        Player[] playerList;
+        List<Player> playerList;
         List<Player> step1Players = null;
         List<Player> step2Players = null;
         List<Player> step3Players = null;
@@ -44,25 +44,24 @@ public class MultilinguaChatListener implements Listener {
         String pre;
         String[] first = chat.split(" ");
         // remove the plain text prefix if present
-        if (first[0].equals(plugin.key)) {
+        if (first[0].equals(plugin.getKey())) {
             int key = first[0].length();
             int len = chat.length();
             chat = chat.substring(key, len).trim();
         }
         // remove the yell suffix if present
-        if (first[first.length - 1].equals(plugin.yell)) {
+        if (first[first.length - 1].equals(plugin.getYell())) {
             int yell = first[0].length();
             int len = chat.length() - yell;
             chat = chat.substring(0, len).trim();
         }
-        char[] chatchars = chat.toCharArray();
-        int count = chatchars.length;
+        char[] chatChars = chat.toCharArray();
+        int count = chatChars.length;
         int amount = Math.round(count / 4);
-        if (use_chat_radius && !first[first.length - 1].equals(plugin.yell)) {
+        if (use_chat_radius && !first[first.length - 1].equals(plugin.getYell())) {
             int degradeAfter = plugin.getConfig().getInt("chat_degrade_after");
             int deafAfter = plugin.getConfig().getInt("chat_deaf_after");
-            List<Player> collList = getPlayersWithin(event.getPlayer(), deafAfter);
-            playerList = collList.toArray(new Player[collList.size()]);
+            playerList = getPlayersWithin(event.getPlayer(), deafAfter);
             int degradeRange = deafAfter - degradeAfter;
             int step = Math.round(degradeRange / 3);
             List<Player> nearPlayers = getPlayersWithin(event.getPlayer(), degradeAfter);
@@ -73,13 +72,13 @@ public class MultilinguaChatListener implements Listener {
             step2Players.removeAll(step1Players);
             step1Players.removeAll(nearPlayers);
         } else {
-            playerList = plugin.getServer().getOnlinePlayers();
+            playerList = new ArrayList(plugin.getServer().getOnlinePlayers());
         }
-        FPlayer fp = FPlayers.i.get(event.getPlayer());
+        MPlayer mp = MPlayer.get(event.getPlayer());
         String fID = "";
         boolean should_cipher = false;
-        if (fp.hasFaction()) {
-            fID = fp.getFactionId();
+        if (mp.hasFaction()) {
+            fID = mp.getFactionId();
             String query = "SELECT faction_id FROM multilingua WHERE faction_id = '" + fID + "'";
             Statement statement = null;
             ResultSet rs = null;
@@ -89,7 +88,7 @@ public class MultilinguaChatListener implements Listener {
                 rs = statement.executeQuery(query);
                 if (rs.isBeforeFirst()) {
                     should_cipher = true;
-                    encoder = new HashMap<Character, Character>();
+                    encoder = new HashMap<>();
                     char[] shuffled = MultilinguaConstants.shuffle(MultilinguaConstants.cipher).toCharArray();
                     int i = 0;
                     for (char c : MultilinguaConstants.chars) {
@@ -97,7 +96,7 @@ public class MultilinguaChatListener implements Listener {
                         i++;
                     }
                     StringBuilder sb = new StringBuilder();
-                    for (char c : chatchars) {
+                    for (char c : chatChars) {
                         if (encoder.containsKey(c)) {
                             sb.append(encoder.get(c));
                         } else {
@@ -110,63 +109,68 @@ public class MultilinguaChatListener implements Listener {
                 player.sendMessage("[Multi-lingua] There was a problem finding the faction language!");
             } finally {
                 try {
-                    rs.close();
-                    statement.close();
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (statement != null) {
+                        statement.close();
+                    }
                 } catch (Exception e) {
                 }
             }
         }
-        List<Integer> numbers = new ArrayList<Integer>();
+        List<Integer> numbers = new ArrayList<>();
         for (int j = 0; j < count; j++) {
             numbers.add(j);
         }
         Collections.shuffle(numbers);
         for (Player p : playerList) {
             // reset chat!
-            String playerchat = chat;
-            String playercipher = cipher;
-            FPlayer onlineP = FPlayers.i.get(p);
-            ChatColor factionColour = fp.getColorTo(onlineP);
+            String playerChat = chat;
+            String playerCipher = cipher;
+            MPlayer onlineP = MPlayer.get(p);
+            ChatColor factionColour = mp.getColorTo(onlineP);
             ChatColor opColour = (player.isOp()) ? ChatColor.RED : ChatColor.RESET;
-            String space = (fp.hasFaction()) ? " " : "";
-            pre = "<" + factionColour + fp.getChatTag() + space + opColour + player.getName() + ChatColor.RESET + "> ";
+            String space = (mp.hasFaction()) ? " " : "";
+            String faction = mp.getFaction().getName();
+            pre = "<" + factionColour + mp.getRole().getPrefix() + faction + space + opColour + player.getName() + ChatColor.RESET + "> ";
             // console always gets the plain message...
             console.sendMessage(pre + chat);
-            if (!should_cipher || (onlineP.hasFaction() && onlineP.getFactionId().equals(fID)) || first[0].equals(plugin.key) || !fp.hasFaction()) {
+            if (!should_cipher || (onlineP.hasFaction() && onlineP.getFactionId().equals(fID)) || first[0].equals(plugin.getKey()) || !mp.hasFaction()) {
                 // send the plain message
-                if (use_chat_radius && !first[first.length - 1].equals(plugin.yell)) {
-                    char[] letters = playerchat.toCharArray();
+                if (use_chat_radius && !first[first.length - 1].equals(plugin.getYell())) {
+                    char[] letters = playerChat.toCharArray();
                     if (step1Players != null && step1Players.contains(p)) {
-                        playerchat = degradeChat(letters, amount, numbers);
+                        playerChat = degradeChat(letters, amount, numbers);
                     }
                     if (step2Players != null && step2Players.contains(p)) {
-                        playerchat = degradeChat(letters, (amount * 2), numbers);
+                        playerChat = degradeChat(letters, (amount * 2), numbers);
                     }
                     if (step3Players != null && step3Players.contains(p)) {
-                        playerchat = degradeChat(letters, (amount * 3), numbers);
+                        playerChat = degradeChat(letters, (amount * 3), numbers);
                     }
                 }
-                p.sendMessage(pre + playerchat);
+                p.sendMessage(pre + playerChat);
             } else {
                 // send the cipher message
-                if (use_chat_radius && !first[first.length - 1].equals(plugin.yell)) {
-                    char[] letters = playercipher.toCharArray();
+                if (use_chat_radius && !first[first.length - 1].equals(plugin.getYell())) {
+                    char[] letters = playerCipher.toCharArray();
                     if (step1Players != null && step1Players.contains(p)) {
-                        playercipher = degradeChat(letters, amount, numbers);
+                        playerCipher = degradeChat(letters, amount, numbers);
                     }
                     if (step2Players != null && step2Players.contains(p)) {
-                        playercipher = degradeChat(letters, (amount * 2), numbers);
+                        playerCipher = degradeChat(letters, (amount * 2), numbers);
                     }
                     if (step3Players != null && step3Players.contains(p)) {
-                        playercipher = degradeChat(letters, (amount * 3), numbers);
+                        playerCipher = degradeChat(letters, (amount * 3), numbers);
                     }
                 }
-                p.sendMessage(pre + playercipher);
+                p.sendMessage(pre + playerCipher);
             }
         }
         event.setCancelled(true);
 
-        if (first[first.length - 1].equals(plugin.yell) && plugin.getConfig().getBoolean("dizzy_after_yell")) {
+        if (first[first.length - 1].equals(plugin.getYell()) && plugin.getConfig().getBoolean("dizzy_after_yell")) {
             // remove hunger and make dizzy
             player.setFoodLevel(player.getFoodLevel() - plugin.getConfig().getInt("dizzy_hunger"));
             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, plugin.getConfig().getInt("dizzy_ticks"), 10));
@@ -174,7 +178,7 @@ public class MultilinguaChatListener implements Listener {
     }
 
     public List<Player> getPlayersWithin(Player player, int distance) {
-        List<Player> tmp = new ArrayList<Player>();
+        List<Player> tmp = new ArrayList<>();
         int d2 = distance * distance;
         for (Player p : plugin.getServer().getOnlinePlayers()) {
             if (p.getWorld() == player.getWorld() && p.getLocation().distanceSquared(player.getLocation()) <= d2) {

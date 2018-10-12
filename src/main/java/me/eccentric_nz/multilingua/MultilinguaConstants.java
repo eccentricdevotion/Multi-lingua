@@ -1,4 +1,4 @@
-package me.eccentric_nz.plugins.multilingua;
+package me.eccentric_nz.multilingua;
 
 import org.bukkit.ChatColor;
 
